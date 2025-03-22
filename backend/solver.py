@@ -135,6 +135,15 @@ def classify_item_ai(item_data: Dict[str, str]) -> Dict:
 
     categorical_features = ['коллекция', 'внешний вид', 'категория', 'редкость', 'цвет', 'турнир']
 
+    if not any(item_data.get(feature) for feature in categorical_features):
+        return {
+            "type": "Не определён",
+            "explanation": [
+                "Все поля пустые. Введите данные для хотя бы одного свойства."
+            ],
+            "probabilities": {}
+        }
+
     full_item_data = {feature: item_data.get(feature, "") for feature in categorical_features}
 
     input_df = pd.DataFrame([full_item_data])
