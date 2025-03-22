@@ -5,11 +5,20 @@ from fastapi import HTTPException
 from typing import Dict
 import joblib
 import pandas as pd
+from tensorflow.keras.models import load_model
 
 try:
-    model = joblib.load("../ml/model.pkl")
-    label_encoder = joblib.load("../ml/label_encoder.pkl")
-    preprocessor = joblib.load("../ml/preprocessor.pkl")
+
+    # Использование нейронной сети
+    model = load_model("../ml/neural_network_model_ai.h5")
+    label_encoder = joblib.load("../ml/label_encoder_ai.pkl")
+    preprocessor = joblib.load("../ml/preprocessor_ai.pkl")
+
+    # Использование ML
+    # model = joblib.load("../ml/model.pkl")
+    # label_encoder = joblib.load("../ml/label_encoder.pkl")
+    # preprocessor = joblib.load("../ml/preprocessor.pkl")
+
 except FileNotFoundError:
     model = None
     label_encoder = None
@@ -20,6 +29,7 @@ except Exception as e:
     label_encoder = None
     preprocessor = None
     print(f"ERROR: Failed to load AI model: {type(e).__name__}: {e}")
+
 
 def classify_item(db: Session, item_data: Dict[str, str]) -> Dict:
     all_types = logic.get_types(db)
@@ -74,39 +84,78 @@ def classify_item(db: Session, item_data: Dict[str, str]) -> Dict:
         result = {
             "type": suitable_types[0] if len(suitable_types) == 1 else ", ".join(suitable_types),
             "explanation": [
-                f"Подходящие типы предмета: {', '.join(suitable_types)}."
-            ] + explanations
+                               f"Подходящие типы предмета: {', '.join(suitable_types)}."
+                           ] + explanations
         }
     else:
         result = {
             "type": "Тип предмета не определён",
             "explanation": [
-                "Все гипотезы о типе предмета опровергнуты. Тип предмета не определён."
-            ] + explanations
+                               "Все гипотезы о типе предмета опровергнуты. Тип предмета не определён."
+                           ] + explanations
         }
 
     return result
 
+# Предсказание с помощью ML
+# def classify_item_ai(item_data: Dict[str, str]) -> Dict:
+#     if model is None or label_encoder is None:
+#         raise HTTPException(status_code=500, detail="AI model is not available. Please check server logs.")
+#
+#     categorical_features = ['коллекция', 'внешний вид', 'категория', 'редкость', 'цвет', 'турнир']
+#     full_item_data = {feature: item_data.get(feature, "") for feature in categorical_features}
+#     input_df = pd.DataFrame([full_item_data])
+#
+#     try:
+#         predicted_class = model.predict(input_df)[0]
+#         predicted_type = label_encoder.inverse_transform([predicted_class])[0]
+#         probabilities = model.predict_proba(input_df)[0]
+#         prob_dict = {
+#             label_encoder.inverse_transform([i])[0]: float(prob)
+#             for i, prob in enumerate(probabilities)
+#         }
+#         explanation = [
+#             f"Модель ИИ предсказала тип '{predicted_type}' на основе введённых данных.",
+#             "Вероятности для каждого типа предмета приведены ниже."
+#         ]
+#         result = {
+#             "type": predicted_type,
+#             "explanation": explanation,
+#             "probabilities": prob_dict
+#         }
+#         return result
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error during AI prediction: {str(e)}")
+
+# Предсказание с помощью ИИ
 def classify_item_ai(item_data: Dict[str, str]) -> Dict:
-    if model is None or label_encoder is None:
-        raise HTTPException(status_code=500, detail="AI model is not available. Please check server logs.")
+    if model is None or label_encoder is None or preprocessor is None:
+        raise HTTPException(status_code=500,
+                            detail="AI model or preprocessor is not available. Please check server logs.")
 
     categorical_features = ['коллекция', 'внешний вид', 'категория', 'редкость', 'цвет', 'турнир']
+
     full_item_data = {feature: item_data.get(feature, "") for feature in categorical_features}
+
     input_df = pd.DataFrame([full_item_data])
 
     try:
-        predicted_class = model.predict(input_df)[0]
+        processed_data = preprocessor.transform(input_df)
+
+        predicted_probabilities = model.predict(processed_data)[0]
+        predicted_class = predicted_probabilities.argmax()
         predicted_type = label_encoder.inverse_transform([predicted_class])[0]
-        probabilities = model.predict_proba(input_df)[0]
+
         prob_dict = {
-            label_encoder.inverse_transform([i])[0]: float(prob)
-            for i, prob in enumerate(probabilities)
+            label_encoder.inverse_transform([i])[0]: float(predicted_probabilities[i])
+            for i in range(len(predicted_probabilities))
         }
+
         explanation = [
             f"Модель ИИ предсказала тип '{predicted_type}' на основе введённых данных.",
             "Вероятности для каждого типа предмета приведены ниже."
         ]
+
         result = {
             "type": predicted_type,
             "explanation": explanation,

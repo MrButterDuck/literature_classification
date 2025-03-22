@@ -59,7 +59,7 @@ const InferencePage = () => {
     const handleValueChange = (propertyName, value) => {
         setSelectedValues(prevValues => ({
             ...prevValues,
-            [propertyName.toLowerCase()]: value === "" ? "" : value, // Сбрасываем на пустую строку, если выбрано "Не выбрано"
+            [propertyName.toLowerCase()]: value === "" ? "" : value,
         }));
     };
 
@@ -151,7 +151,7 @@ const InferencePage = () => {
                     Определить тип (Решатель)
                 </button>
                 <button onClick={handleClassifyAI}>
-                    Определить тип (ИИ)
+                    Определить тип (Нейронная сеть)
                 </button>
             </div>
             {result && (
@@ -173,7 +173,7 @@ const InferencePage = () => {
             )}
             {resultAI && (
                 <div>
-                    <h2>Результат классификации (ИИ):</h2>
+                    <h2>Результат классификации (Нейронная сеть):</h2>
                     <p><strong>Тип предмета:</strong> {resultAI.type}</p>
                     <h3>Объяснение:</h3>
                     <ul>
@@ -184,14 +184,16 @@ const InferencePage = () => {
                     <h3>Вероятности:</h3>
                     <ul>
                         {Object.entries(resultAI.probabilities).map(([type, prob]) => (
-                            <li key={type}>{type}: {prob.toFixed(4)}</li>
+                            <li key={type}>
+                                <strong>{type}:</strong> {(prob * 100).toFixed(2)}%
+                            </li>
                         ))}
                     </ul>
                 </div>
             )}
             {classificationErrorAI && (
                 <div style={{ color: 'red' }}>
-                    Ошибка классификации (ИИ): {classificationErrorAI}
+                    Ошибка классификации (Нейронная сеть): {classificationErrorAI}
                 </div>
             )}
         </div>
