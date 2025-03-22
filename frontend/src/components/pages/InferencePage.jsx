@@ -59,7 +59,7 @@ const InferencePage = () => {
     const handleValueChange = (propertyName, value) => {
         setSelectedValues(prevValues => ({
             ...prevValues,
-            [propertyName.toLowerCase()]: value,
+            [propertyName.toLowerCase()]: value === "" ? "" : value, // Сбрасываем на пустую строку, если выбрано "Не выбрано"
         }));
     };
 
@@ -109,26 +109,25 @@ const InferencePage = () => {
             {properties.map((property) => (
                 <div key={property.id} style={{ marginBottom: '20px' }}>
                     <h3>{property.name}</h3>
-                    <div>
-                        {possibleValues[property.name.toLowerCase()] ? (
-                            possibleValues[property.name.toLowerCase()].map((value) => (
-                                <label key={value} style={{ marginRight: '15px' }}>
-                                    <input
-                                        type="radio"
-                                        name={property.name.toLowerCase()}
-                                        value={value}
-                                        checked={selectedValues[property.name.toLowerCase()] === value}
-                                        onChange={() => handleValueChange(property.name, value)}
-                                    />
-                                    {value}
-                                </label>
-                            ))
-                        ) : (
-                            <div>Нет значений</div>
-                        )}
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <select
+                            value={selectedValues[property.name.toLowerCase()] || ""}
+                            onChange={(e) => handleValueChange(property.name, e.target.value)}
+                            style={{ marginRight: '10px', padding: '5px' }}
+                        >
+                            <option value="">Не выбрано</option>
+                            {possibleValues[property.name.toLowerCase()] ? (
+                                possibleValues[property.name.toLowerCase()].map((value) => (
+                                    <option key={value} value={value}>
+                                        {value}
+                                    </option>
+                                ))
+                            ) : (
+                                <option disabled>Нет значений</option>
+                            )}
+                        </select>
                         <button
                             onClick={() => handleResetValue(property.name)}
-                            style={{ marginLeft: '10px' }}
                             disabled={!selectedValues[property.name.toLowerCase()]}
                         >
                             Сбросить

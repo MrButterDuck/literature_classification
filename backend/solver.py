@@ -103,7 +103,6 @@ def classify_item_ai(item_data: Dict[str, str]) -> Dict:
             label_encoder.inverse_transform([i])[0]: float(prob)
             for i, prob in enumerate(probabilities)
         }
-
         explanation = [
             f"Модель ИИ предсказала тип '{predicted_type}' на основе введённых данных.",
             "Вероятности для каждого типа предмета приведены ниже."
