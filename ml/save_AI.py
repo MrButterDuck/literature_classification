@@ -10,16 +10,12 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.utils import to_categorical
 
-# Загрузка данных
 data = pd.read_csv("dataset.csv")
 
-# Заполнение пропущенных значений
 data = data.fillna("")
 
-# Определение категориальных признаков
 categorical_features = ['коллекция', 'внешний вид', 'категория', 'редкость', 'цвет', 'турнир']
 
-# Препроцессинг категориальных признаков
 preprocessor = ColumnTransformer(
     transformers=[
         ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features),
@@ -27,11 +23,9 @@ preprocessor = ColumnTransformer(
     remainder='passthrough'
 )
 
-# Разделение данных на признаки (X) и целевую переменную (y)
 X = data.drop('тип_предмета', axis=1)
 y = data['тип_предмета']
 
-# Кодирование целевой переменной
 label_encoder = LabelEncoder()
 y = label_encoder.fit_transform(y)
 
