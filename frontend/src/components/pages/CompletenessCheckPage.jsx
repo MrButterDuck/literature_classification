@@ -91,14 +91,6 @@ const CompletenessCheckPage = () => {
           <p>У всех свойств есть возможные значения.</p>
         )}
       </div>
-
-      <div>
-        <Link to="/inference">
-          <button disabled={!isComplete}>
-            Перейти к вводу исходных данных
-          </button>
-        </Link>
-      </div>
     </div>
   );
 };
