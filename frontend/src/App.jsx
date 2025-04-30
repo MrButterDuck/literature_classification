@@ -1,4 +1,4 @@
-import './app.css';
+// import './app.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -14,12 +14,11 @@ import InferencePage from './components/pages/InferencePage';
 
 const AppContent = () => {
     const location = useLocation();
-    const showNavbar = location.pathname !== '/inference';
 
     return (
-        <div className="App" style={{ display: 'flex' }}>
-            {showNavbar && <Navbar />}
-            <div style={{ padding: '20px', flexGrow: 1 }}>
+        <div className="flex flex-1">
+            {<Navbar className="w-64 bg-gray-800 text-white"/>}
+            <div className="flex-1 flex bg-gray-100 p-4 justify-center">
                 <Routes>
                     <Route path="/" element={<TypesPage />} />
                     <Route path="/properties" element={<PropertiesPage />} />

@@ -14,11 +14,6 @@ try:
     label_encoder = joblib.load("../ml/label_encoder_ai.pkl")
     preprocessor = joblib.load("../ml/preprocessor_ai.pkl")
 
-    # Использование ML
-    # model = joblib.load("../ml/model.pkl")
-    # label_encoder = joblib.load("../ml/label_encoder.pkl")
-    # preprocessor = joblib.load("../ml/preprocessor.pkl")
-
 except FileNotFoundError:
     model = None
     label_encoder = None
@@ -29,6 +24,8 @@ except Exception as e:
     label_encoder = None
     preprocessor = None
     print(f"ERROR: Failed to load AI model: {type(e).__name__}: {e}")
+finally:
+    print("AI model succesfully loaded")
 
 
 def classify_item(db: Session, item_data: Dict[str, str]) -> Dict:
@@ -133,9 +130,9 @@ def classify_item_ai(item_data: Dict[str, str]) -> Dict:
         raise HTTPException(status_code=500,
                             detail="AI model or preprocessor is not available. Please check server logs.")
 
-    categorical_features = ['коллекция', 'внешний вид', 'категория', 'редкость', 'цвет', 'турнир']
+    categorical_features = ["Формат", "Длина", "Период", "Аудитория", "Цель"]
 
-    if not any(item_data.get(feature) for feature in categorical_features):
+    if not any(item_data.get(feature.lower()) for feature in categorical_features):
         return {
             "type": "Не определён",
             "explanation": [
@@ -144,7 +141,7 @@ def classify_item_ai(item_data: Dict[str, str]) -> Dict:
             "probabilities": {}
         }
 
-    full_item_data = {feature: item_data.get(feature, "") for feature in categorical_features}
+    full_item_data = {feature: item_data.get(feature.lower(), "") for feature in categorical_features}
 
     input_df = pd.DataFrame([full_item_data])
 

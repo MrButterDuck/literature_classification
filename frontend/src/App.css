@@ -1,7 +1,14 @@
-.App {
+/* .App {
     display: flex;
     min-height: 100vh;
 }
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: top;
+    background-color: #ffffff;
+  }
 
 
 .content {
@@ -95,3 +102,21 @@
     background-color: #f8d7da;
     color: #721c24;
 }
+
+.int-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .left-column {
+    flex: 1;
+    background-color: #f0f0f0;
+  }
+  
+  .right-column {
+    gap: 10px;
+    flex: 1;
+    background-color: #f0f0f0;
+  } */

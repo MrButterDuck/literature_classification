@@ -199,12 +199,15 @@ const handleDeleteValue = async (value) => {
     }
 
     return (
-        <div>
-            <h2>Значения свойств для типов</h2>
-
+        <div className="block rounded-lg p-10 bg-white text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-black">
+            <div className="border-b-2 border-neutral-100 px-6 py-3 dark:border-black/10 text-center">
+                <h2>Значения свойств для типов</h2>
+                </div>
             {error && <div style={{ color: 'red' }}>{error}</div>}
 
+            <div className="flex m-1 gap-2 justify-center w-100">
             <select
+                class="flex-1  w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
             >
@@ -217,6 +220,7 @@ const handleDeleteValue = async (value) => {
             </select>
 
             <select
+                class="flex-1  w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 value={selectedProperty}
                 onChange={(e) => setSelectedProperty(e.target.value)}
             >
@@ -231,7 +235,7 @@ const handleDeleteValue = async (value) => {
                         </option>
                     ))}
             </select>
-
+            </div>        
             {selectedType && selectedProperty && (
                 <div>
                     <h3>
@@ -239,13 +243,14 @@ const handleDeleteValue = async (value) => {
                         {properties.find((prop) => prop.id === parseInt(selectedProperty))?.name} типа{" "}
                         {types.find((type) => type.id === parseInt(selectedType))?.name}
                     </h3>
-                    <ul>
+                    <ul className="pt-3 max-w-md space-y-1 text-gray-500 list-decimal list-inside dark:text-gray-400">
                         {propertyValues[selectedType] && propertyValues[selectedType][properties.find(prop => prop.id === parseInt(selectedProperty))?.name]
                             ? (propertyValues[selectedType][properties.find(prop => prop.id === parseInt(selectedProperty))?.name]
                                 .map((value, index) => (
-                                    <li key={index}>
+                                    <li key={index} className="flex justify-between pl-3 font-semibold text-gray-900 dark:text-black" >
                                         {value}
-                                        <button className="delete-btn" onClick={() => handleDeleteValue(value)}> - </button>
+                                        <button className="right-2 top-1 rounded bg-slate-800 py-1 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                        onClick={() => handleDeleteValue(value)}> - </button>
                                     </li>
                                 ))
                             )
@@ -253,7 +258,9 @@ const handleDeleteValue = async (value) => {
                         }
                     </ul>
 
-                    <select onChange={(e) => handleAddValue(e.target.value)}>
+                    <select 
+                        class="flex-1  w-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        onChange={(e) => handleAddValue(e.target.value)}>
                         <option value="">Выберите значение</option>
                         {possibleValues[properties.find(prop => prop.id === parseInt(selectedProperty))?.name]
                             ?.map((value) => (

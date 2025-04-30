@@ -38,6 +38,7 @@ class ItemData(BaseModel):
 
 @app.post("/classify")
 async def classify(item_data: ItemData, db: SessionLocal = Depends(get_db)):
+    print(item_data)
     return solver.classify_item(db, item_data.properties)
 
 

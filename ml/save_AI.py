@@ -14,7 +14,7 @@ data = pd.read_csv("dataset.csv")
 
 data = data.fillna("")
 
-categorical_features = ['коллекция', 'внешний вид', 'категория', 'редкость', 'цвет', 'турнир']
+categorical_features = ["Формат", "Длина", "Период", "Аудитория", "Цель"]
 
 preprocessor = ColumnTransformer(
     transformers=[

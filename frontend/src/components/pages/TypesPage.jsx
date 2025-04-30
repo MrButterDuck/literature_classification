@@ -52,27 +52,35 @@ const TypesPage = () => {
   }
 
   return (
-    <div>
-      <h2>Типы предметов</h2>
-
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-
-      <input
-        type="text"
-        value={newType}
-        onChange={(e) => setNewType(e.target.value)}
-        placeholder="Введите новый тип"
-      />
-      <button onClick={handleAddType}>Добавить тип</button>
-      <ul>
-        {types.map((type) => (
-          <li key={type.id}>
-            {type.name}
-            <button className="delete-btn" onClick={() => handleDeleteType(type.id)}> - </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <div className="block p-10 rounded-lg bg-white text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-black">
+      <div className="border-b-2 border-neutral-100 px-6 py-3 dark:border-black/10 text-center">
+        <h2>Типы произведений</h2>
+      </div>
+        {error && <div style={{ color: 'red' }}>{error}</div>}
+      <div className=" ">
+        <div className="relative flex justify-center m-1 w-100">
+          <input 
+            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-3 pr-40 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+            type="text" 
+            value={newType}
+            onChange={(e) => setNewType(e.target.value)}
+            placeholder="Введите новый тип"/>
+          <button 
+            className="absolute right-2 top-1 rounded bg-slate-800 py-1 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" 
+            onClick={handleAddType} >
+            Добавить тип
+          </button>
+        </div>
+        <ol className="max-w-md space-y-1 text-gray-500 list-decimal list-inside dark:text-gray-400">
+          {types.map((type) => (
+            <li key={type.id} className="flex justify-between font-semibold text-gray-900 dark:text-black">
+              {type.name}
+              <button className="right-2 top-1 rounded bg-slate-800 py-1 px-2.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" onClick={() => handleDeleteType(type.id)}> - </button>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>    
   );
 };
 

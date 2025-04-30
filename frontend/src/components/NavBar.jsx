@@ -6,7 +6,7 @@ const Navbar = () => {
     return (
         <nav>
             <ul>
-                <li><NavLink to="/" end>Типы предмета</NavLink></li>
+                <li><NavLink to="/" end>Типы произведений</NavLink></li>
                 <li><NavLink to="/properties">Свойства</NavLink></li>
                 <li><NavLink to="/possible-values">Возможные значения</NavLink></li>
                 <li><NavLink to="/type-properties">Описание свойств типа</NavLink></li>
