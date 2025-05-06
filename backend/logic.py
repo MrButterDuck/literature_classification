@@ -174,6 +174,22 @@ def get_property_values(db: Session, type_id: int, property_id: int) -> List[sch
         models.PropertyValue.property_name == db_property.name
     ).all()
 
+
+def get_property_values_with_name(db: Session, type_name: str, property_name: str) -> List[schemas.PropertyValueOut]:
+    db_type = db.query(models.Type).filter(models.Type.name == type_name).first()
+    if db_type is None:
+        raise HTTPException(status_code=404, detail="Тип не найден")
+
+    db_property = db.query(models.Property).filter(models.Property.name == property_name).first()
+    if db_property is None:
+        raise HTTPException(status_code=404, detail="Свойство не найдено")
+
+    return db.query(models.PropertyValue).filter(
+        models.PropertyValue.type_name == db_type.name,
+        models.PropertyValue.property_name == db_property.name
+    ).all()
+
+
 def create_property_value(db: Session, type_id: int, property_id: int, property_value_data: schemas.PropertyValueCreate) -> schemas.PropertyValueOut:
     db_type = db.query(models.Type).filter(models.Type.id == type_id).first()
     if not db_type:
