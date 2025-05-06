@@ -33,6 +33,7 @@ async function fetchData(url, method = 'GET', data = null) {
   return response.json();
 }
 
+
 export const getTypes = () => fetchData('/types');
 export const createType = (typeData) => fetchData('/types', 'POST', typeData);
 export const deleteType = (typeId) => fetchData(`/types/${typeId}`, 'DELETE');
@@ -62,3 +63,5 @@ export const checkCompleteness = () => fetchData('/completeness-check');
 
 export const classifyItem = (itemData) => fetchData('/classify', 'POST', itemData);
 export const classifyItemAI = (itemData) => fetchData('/classify-ai', 'POST', itemData);
+export const train_model = (itemData) => fetchData('/train-ai', 'POST', itemData)
+export const check_model = (itemData) => fetchData('/check-model', 'POST', itemData)

@@ -40,7 +40,7 @@ const InferencePage = () => {
             const allValues = {};
             try {
                 console.log("Fetching possible values for properties:", properties);
-                for (const property of properties) {
+                for (const property of properties) { 
                     const data = await api.getPossibleValues(property.name);
                     console.log(`Possible values for ${property.name}:`, data);
                     allValues[property.name.toLowerCase()] = data.map(item => item.value);
@@ -86,16 +86,38 @@ const InferencePage = () => {
         setResultAI(null);
         console.log("Sending selectedValues:", selectedValues);
         try {
-            const result = await api.classifyItemAI({ properties: selectedValues });
+            let result = await api.check_model({ properties: selectedValues });
+            console.log(result)
+            if (!result) {
+                setLoading(true);
+                console.log("Запрос на переобучение...");
+                await api.train_model({ properties: selectedValues }); 
+                await new Promise(resolve => setTimeout(resolve, 5000));
+    
+                result = await api.classifyItemAI({ properties: selectedValues });
+            }
+            else {
+                result = await api.classifyItemAI({ properties: selectedValues });    
+            }
+
             setResultAI(result);
         } catch (error) {
             setClassificationErrorAI(error.message);
+        } finally {
+            setLoading(false);
         }
+        
     };
 
-    if (loading) {
-        return <div>Загрузка...</div>;
-    }
+    // if (loading) {
+    //     return (
+    //         <div className="fixed inset-0 flex items-center justify-center bg-white/30 backdrop-blur-md z-50">
+    //             <div className="p-6 rounded-lg bg-white shadow-lg">
+    //                 <h2 className="text-xl font-semibold">Загрузка...</h2>
+    //             </div>
+    //         </div>
+    //     );
+    // }
 
     if (error) {
         return <div>Ошибка: {error}</div>;
@@ -104,6 +126,13 @@ const InferencePage = () => {
     return (
         <div className="flex gap-4 rounded-lg p-10 bg-white text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-black ">
             <div className="flex-1">
+            {loading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-white/30 backdrop-blur-md z-50">
+                    <div className="p-6 rounded-lg bg-white shadow-lg">
+                        <h2 className="text-xl font-semibold">Загрузка...</h2>
+                    </div>
+                </div>
+            )}
                 <div className="border-b-2 border-neutral-100 px-6 py-3 dark:border-black/10 text-center">
                     <h1>Ввод исходных данных</h1>
                 </div>
