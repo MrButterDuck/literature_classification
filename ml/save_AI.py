@@ -9,11 +9,12 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.losses import CategoricalCrossentropy
 
 data = pd.read_csv("dataset.csv")
 
 data = data.fillna("")
-
+print(data['тип_предмета'].value_counts())
 categorical_features = ["Формат", "Длина", "Период", "Аудитория", "Цель"]
 
 preprocessor = ColumnTransformer(
@@ -38,14 +39,15 @@ X_test = preprocessor.transform(X_test)
 
 model = Sequential([
     Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
-    Dropout(0.2),
+    Dropout(0.1),
     Dense(64, activation='relu'),
-    Dropout(0.2),
+    Dropout(0.1),
     Dense(32, activation='relu'),
     Dense(y_train.shape[1], activation='softmax')
 ])
 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+loss = CategoricalCrossentropy(label_smoothing=0.1)
+model.compile(optimizer='adam', loss=loss, metrics=['accuracy'])
 
 history = model.fit(X_train, y_train, epochs=20, batch_size=32, validation_split=0.2)
 
