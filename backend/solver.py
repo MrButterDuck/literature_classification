@@ -161,13 +161,16 @@ def classify_item_ai(db, item_data: Dict[str, str]) -> Dict:
         }
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error during AI prediction: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Error during AI prediction: {str(e)}"
+        )
 
 
 def retrain_model(db):
     try:
         global model, label_encoder, preprocessor
-        data, properties = generate_dataset(db, num_samples_per_type=10000, output_file="ai/test.csv",)
+        data, properties = generate_dataset(db, num_samples_per_type=1000, output_file="ai/test.csv",)
         model, label_encoder, preprocessor = ai_model(data, properties)
         with open('ai/is_changed.txt', 'w') as f:
             f.write('False')
